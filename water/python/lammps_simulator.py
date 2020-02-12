@@ -101,7 +101,7 @@ class AutoSim:
             self.append_type_to_file(name, params, filename)
         
             
-    def modify_shell(self, read_data, input_script, extension):
+    def modify_shell(self, read_data, input_script, path):
         '''
         Modify shell
         '''
@@ -117,13 +117,13 @@ class AutoSim:
         f.close()
         
         if self.substance == "silica" or self.substance == "sio2":
-            contents.insert(6, "variable extension equal {}\n".format(extension))
-            contents.insert(7, "\n")
-            contents.insert(8, "read_data ../data/silica_slab.data\n")
-            contents.insert(9, "pair_style vashishta\n")
-            contents.insert(10, "pair_coeff * * {} {}\n".format(self.filename, element_string))
+            contents.insert(4, "variable path string {}\n".format(path))
+            contents.insert(5, "\n")
+            contents.insert(6, "read_data {}\n".format(read_data))
+            contents.insert(7, "pair_style vashishta\n")
+            contents.insert(8, "pair_coeff * * {} {}\n".format(self.filename, element_string))
             for i in range(len(masses)):
-                contents.insert(11+i, "mass" + 12 * " " + str(i+1) + " " + str(masses[i]) + "\n")
+                contents.insert(9+i, "mass" + 12 * " " + str(i+1) + " " + str(masses[i]) + "\n")
 
             f = open(input_script, "w")
             contents = "".join(contents)
@@ -131,13 +131,13 @@ class AutoSim:
             f.close()
             
         elif self.substance == "water" or self.substance == "h2o":
-            contents.insert(6, "variable extension equal {}\n".format(extension))
-            contents.insert(7, "\n")
-            contents.insert(8, "read_data ../data/water_lmps.data\n")
-            contents.insert(9, "pair_style vashishta\n")
-            contents.insert(10, "pair_coeff * * {} {}\n".format(self.filename, element_string))
+            contents.insert(4, "variable path string {}\n".format(path))
+            contents.insert(5, "\n")
+            contents.insert(6, "read_data {}\n".format(read_data))
+            contents.insert(7, "pair_style vashishta\n")
+            contents.insert(8, "pair_coeff * * {} {}\n".format(self.filename, element_string))
             for i in range(len(masses)):
-                contents.insert(11+i, "mass" + 12 * " " + str(i+1) + " " + str(masses[i]) + "\n")
+                contents.insert(9+i, "mass" + 12 * " " + str(i+1) + " " + str(masses[i]) + "\n")
 
             f = open(input_script, "w")
             contents = "".join(contents)
@@ -161,7 +161,7 @@ class AutoSim:
     def simulate(self, read_data="../data/water_lmps.data",
                        lammps_exec="mpirun -n 4 lmp_mpi", 
                        input_script="../lammps/script.in", 
-                       extension="0"):
+                       path="../data/"):
         '''
         Run LAMMPs simulation with the parameters. 
         
@@ -171,7 +171,7 @@ class AutoSim:
                                 be an option.
         '''
     
-        self.modify_shell(read_data, input_script, extension)
+        self.modify_shell(read_data, input_script, path)
         self.call_lammps(lammps_exec)
         return None
         

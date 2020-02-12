@@ -9,12 +9,14 @@ import matplotlib.pyplot as plt
 
 number = 2000       # Number of water molecules
 density = 0.9966    # Density of water at 25°C and 1atm
+read_data = "../data/water_lmps.data"
 
+# First pack data
 packer = WaterPack(number)
 packer.den2len(density)
 packer.packmol_gen(pbc=1.0)
 packer.packmol_run()
-packer.xyz2lmp("../data/water_lmps.data")
+packer.xyz2lmp(read_data)
 
 Z_Hs = [0.40, 0.42, 0.44, 0.46, 0.48, 0.50, 0.52, 0.54, 0.56, 0.58, 0.60]
 thetas = np.arange(95, 106)
@@ -39,10 +41,10 @@ for Z_H in Z_Hs:
             
         sim = AutoSim("water")
         sim.set_parameters(params)
-        sim.generate_parameter_file(filename=path + "H2O.vashishta.Zh_{}".format(Z_H))
-        sim.simulate("desk", lammps_exec="mpirun -n 4 lmp_mpi", extension=Z_H)
+        sim.generate_parameter_file(filename=path + "H2O.vashishta")
+        sim.simulate(read_data=read_data, lammps_exec="mpirun -n 4 lmp_mpi", path=path)
 
-        logger = Log(path + "log.{}".format(Z_H))
+        logger = Log(path + "log.data")
         energy = logger.find("TotEng")
         enthal = logger.find("Enthalpy")
         temp = logger.find("Temp")
@@ -54,46 +56,46 @@ for Z_H in Z_Hs:
         plt.plot(temp, energy)
         plt.xlabel("Temperature [K]")
         plt.ylabel("Total energy [eV]")
-        plt.savefig(path + "temp_eng_{}.png".format(Z_H))
+        plt.savefig(path + "temp_eng.png")
         
         plt.figure()
         plt.plot(temp, enthal)
         plt.xlabel("Temperature [K]")
         plt.ylabel("Enthalpy [eV]")
-        plt.savefig(path + "temp_enth_{}.png".format(Z_H))
+        plt.savefig(path + "temp_enth.png")
         
         plt.figure()
         plt.plot(time, temp)
         plt.xlabel("Time [ps]")
         plt.ylabel("Temperature [K]")
-        plt.savefig(path + "time_temp_{}.png".format(Z_H))
+        plt.savefig(path + "time_temp.png")
         
         plt.figure()
         plt.plot(time, energy)
         plt.xlabel("Time [ps]")
         plt.ylabel("Total energy [eV]")
-        plt.savefig(path + "time_eng_{}.png".format(Z_H))
+        plt.savefig(path + "time_eng.png")
         
         plt.figure()
         plt.plot(time, pres)
         plt.xlabel("Time [ps]")
         plt.ylabel("Pressure [Bar]")
-        plt.savefig(path + "time_pres_{}.png".format(Z_H))
+        plt.savefig(path + "time_pres.png")
         
         plt.figure()
         plt.plot(time, density)
         plt.xlabel("Time [ps]")
         plt.ylabel("Density [g/cm³]")
-        plt.savefig(path + "time_density_{}.png".format(Z_H))
+        plt.savefig(path + "time_density.png")
         
-        visualize(path + "minimize_300K.{}.data".format(Z_H),
-                  path + "minimize_300K.{}.png".format(Z_H))
+        visualize(path + "minimize_300K.data",
+                  path + "minimize_300K.png")
                   
-        visualize(path + "water_300K.{}.data".format(Z_H),
-                  path + "water_300K.{}.png".format(Z_H))
+        visualize(path + "water_300K.data",
+                  path + "water_300K.png")
                   
-        visualize(path + "water_301K.{}.data".format(Z_H),
-                  path + "water_301K.{}.png".format(Z_H))
+        visualize(path + "water_301K.data",
+                  path + "water_301K.png")
                   
-        visualize(path + "vapor_450K.{}.data".format(Z_H),
-                  path + "vapor_450K.{}.png".format(Z_H))
+        visualize(path + "vapor_450K.data",
+                  path + "vapor_450K.png")
