@@ -91,11 +91,14 @@ for Z_H in Z_Hs:
         visualize(path + "minimize_300K.data",
                   path + "minimize_300K.png")
                   
-        visualize(path + "water_300K.data",
-                  path + "water_300K.png")
+        visualize(path + "water_after_nvt.data",
+                  path + "water_after_nvt.png")
                   
-        visualize(path + "water_301K.data",
-                  path + "water_301K.png")
+        visualize(path + "water_after_npt.data",
+                  path + "water_after_npt.png")
+                  
+        visualize(path + "water_final.data",
+                  path + "water_final.png")
                   
         visualize(path + "vapor_450K.data",
                   path + "vapor_450K.png")
