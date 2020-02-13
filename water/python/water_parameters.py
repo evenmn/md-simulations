@@ -36,7 +36,7 @@ for Z_H in Z_Hs:
         Z_O = - 2 * Z_H
         params = {"HHH" : {"Zi" : Z_H, "Zj" : Z_H},
                   "OOO" : {"Zi" : Z_O, "Zj" : Z_O},
-                  "OHH" : {"Zi" : Z_O, "Zj" : Z_H, "cos(theta)" : np.cos(theta)},
+                  "OHH" : {"Zi" : Z_O, "Zj" : Z_H, "cos(theta)" : np.cos(np.deg2rad(theta))},
                   "HOO" : {"Zi" : Z_H, "Zj" : Z_O}}
             
         sim = AutoSim("water")
@@ -44,7 +44,7 @@ for Z_H in Z_Hs:
         sim.generate_parameter_file(filename=path + "H2O.vashishta")
         sim.simulate(read_data=read_data, lammps_exec="mpirun -n 4 lmp_mpi", path=path)
 
-        logger = Log(path + "log.data")
+        logger = Log(path + "log.data", ignore_first=3)
         energy = logger.find("TotEng")
         enthal = logger.find("Enthalpy")
         temp = logger.find("Temp")

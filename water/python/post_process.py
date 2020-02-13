@@ -114,17 +114,24 @@ class Dump:
         
 class Log:
     ''' Analyzing log files, containing system information. '''
-    def __init__(self, filename):
+    def __init__(self, filename, ignore_first=0):
         '''Initialize class by reading log file.
         
         Arguments:
         ----------
         filename            {str}   : String with file to load.
+        ignore_first        {int}   : Ignore equilibriation fixes.
         '''
-        self.read_log_file(filename)
+        self.read_log_file(filename, ignore_first)
 
-    def read_log_file(self, filename):
-        ''' Reading log file by going through file line after line. '''
+    def read_log_file(self, filename, ignore_first):
+        ''' Reading log file by going through file line after line. 
+        
+        Arguments:
+        ----------
+        filename            {str}   : String with file to load.
+        ignore_first        {int}   : Ignore equilibriation fixes.
+        '''
         f = open(filename, "r")
 
         self.timestep = 0.005        # Default
@@ -153,7 +160,7 @@ class Log:
             elif line.startswith("mass"):
                 self.mass = float(line.split()[1])
         f.close()
-        self.array = np.hstack(self.lst)
+        self.array = np.hstack(self.lst[ignore_first:])
 
     def categorize(self):
         '''
