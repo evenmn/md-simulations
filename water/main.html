@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<!--
+Automatically generated HTML file from DocOnce source
+(https://github.com/hplgit/doconce/)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="DocOnce: https://github.com/hplgit/doconce/" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="The Water Project">
+
+<title>The Water Project</title>
+
+
+<style type="text/css">
+/* blueish style */
+
+/* Color definitions:  http://www.december.com/html/spec/color0.html
+   CSS examples:       http://www.w3schools.com/css/css_examples.asp */
+
+body {
+  margin-top: 1.0em;
+  background-color: #ffffff;
+  font-family: Helvetica, Arial, FreeSans, san-serif;
+  color: #000000;
+}
+h1 { font-size: 1.8em; color: #1e36ce; }
+h2 { font-size: 1.6em; color: #1e36ce; }
+h3 { font-size: 1.4em; color: #1e36ce; }
+a { color: #1e36ce; text-decoration:none; }
+tt { font-family: "Courier New", Courier; }
+/* pre style removed because it will interfer with pygments */
+p { text-indent: 0px; }
+hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+p.caption { width: 80%; font-style: normal; text-align: left; }
+hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+
+div { text-align: justify; text-justify: inter-word; }
+</style>
+
+
+</head>
+
+<!-- tocinfo
+{'highest level': 1,
+ 'sections': [('Table of contents',
+               1,
+               'table_of_contents',
+               'table_of_contents'),
+              ('Introduction', 1, None, '___sec0'),
+              ('Packing water', 1, None, '___sec1'),
+              ('Find correct volume', 2, None, '___sec2'),
+              ('Generate Packmol input script', 2, None, '___sec3'),
+              ('Run Packmol', 2, None, '___sec4'),
+              ('Convert to LAMMPS-friendly format', 2, None, '___sec5')]}
+end of tocinfo -->
+
+<body>
+
+    
+<!-- ------------------- main content ---------------------- -->
+
+
+
+<center><h1>The Water Project</h1></center>  <!-- document title -->
+
+<p>
+<!-- author(s): Even Marius Nordhagen -->
+
+<center>
+<b>Even Marius Nordhagen</b> 
+</center>
+
+<p>
+<!-- institution(s) -->
+
+<br>
+<p>
+<center><h4>Feb 17, 2020</h4></center> <!-- date -->
+<br>
+
+<h1 id="table_of_contents">Table of contents</h2>
+
+<p>
+<a href="#___sec0"> Introduction </a><br>
+<a href="#___sec1"> Packing water </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec2"> Find correct volume </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec3"> Generate Packmol input script </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec4"> Run Packmol </a><br>
+&nbsp; &nbsp; &nbsp; <a href="#___sec5"> Convert to LAMMPS-friendly format </a><br>
+</p>
+
+<h1 id="___sec0">Introduction </h1>
+Water is a substance that is found everywhere on earth, and is a fundamental requirement for life to occur the way we know it. Therefore, knowledge of water is important both on microscopic and the macroscopic scales. Despite this, general inter-atomic water potentials are often unavailable. The most popular water potentials are tailored in order to model specific properties of water, and if we use the potential to study other properties they will not work.
+
+<p>
+The complexity of water is what makes it hard to find flexible potentials. The water molecules are not static, the distance between the atoms and the three-body angle changes with time, and occasionally OH$^-$-groups and H$_3$O$^+$-groups will occur. Therefore, a realistic water potential does not model the water molecule as a static object, but instead it should set up an inter-atomic potential between all the atoms, based on charge interaction, dipole-dipole-interaction, van der Vaals interactions and so on.
+
+<p>
+The Vashishta potential is an inter-atomic potential developed by Vashishta et al. at the University of Southern California. It is very flexible, and has shown impressive power as silica potential (Vashishta, 1990), SiC potential (Vashishta, 2007) and InP potential (Branicio, 2009). We aim to tweak the parameters in the potential such that the water behaves realistic under 1 atm pressure.
+
+<p>
+<!-- !split -->
+
+<h1 id="___sec1">Packing water </h1>
+Before we can start a simulation, we need to pack water. This should be done wisely, as an unphysical initial water bulk will give unphysical results. Firstly, it is important to pack the water with the correct density. The water density at 1 atm pressure and 300K is 0.9966 g/cm$^3$. Secondly, it is important that the spacing between molecules are appropriate, in order to start with a realistic potential energy.
+
+<h2 id="___sec2">Find correct volume </h2>
+We will use the Packmol package to pack water. It packs the water in a cubic box, and takes the length of the sides of the box as an input. The first thing we need to do, is therefore to find the length of the box side at a given density. The class <code>WaterPack</code> found in <code>python/pack_water.py</code> contains a function for this, and the length can be found from
+
+<p>
+
+<!-- code=python (!bc python) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">pack_water</span> <span style="color: #008000; font-weight: bold">import</span> WaterPack
+
+number <span style="color: #666666">=</span> <span style="color: #666666">2000</span>       <span style="color: #408080; font-style: italic"># Number of water molecules</span>
+density <span style="color: #666666">=</span> <span style="color: #666666">0.9966</span>    <span style="color: #408080; font-style: italic"># Density of water at 25°C and 1atm</span>
+
+packer <span style="color: #666666">=</span> WaterPack(number)
+length <span style="color: #666666">=</span> packer<span style="color: #666666">.</span>den2len(density)        <span style="color: #408080; font-style: italic"># Length of box in [Å]</span>
+</pre></div>
+
+<h2 id="___sec3">Generate Packmol input script </h2>
+Thereafter, we would like to generate a Packmol input script, based on the volume of the cubic box and the number of molecules. This is done by
+
+<p>
+
+<!-- code=python (!bc python) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>packer<span style="color: #666666">.</span>packmol_gen(pbc<span style="color: #666666">=1.0</span>)
+</pre></div>
+<p>
+The argument <code>pbc=1.0</code> is added to have an appropriate spacing between the molecules also at the boundaries.
+
+<h2 id="___sec4">Run Packmol </h2>
+We are now ready to run Packmol and generate the positions of all the atoms. Simply run
+
+<p>
+
+<!-- code=python (!bc python) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>packer<span style="color: #666666">.</span>packmol_run()
+</pre></div>
+<p>
+PS: This requires that the Packmol package is installed correctly. See <a href="http://m3g.iqm.unicamp.br/packmol/home.shtml" target="_self">the Packmol webpage</a>.
+
+<h2 id="___sec5">Convert to LAMMPS-friendly format </h2>
+The file generated by Packmol is on XYZ-format, which LAMMPS does not support. To convert the file to a LAMMPS-friendly file, run
+
+<p>
+
+<!-- code=python (!bc python) typeset with pygments style "default" -->
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>read_data <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;data/water_lmps.data&quot;</span>
+packer<span style="color: #666666">.</span>xyz2lmp(read_data)
+</pre></div>
+<p>
+Now we finally have a realistic initial water configuration. It is presented in figures <a href="#fig:front">1</a> and <a href="#fig:perspective">2</a>.
+
+<p>
+<center> <!-- figure label: --> <div id="fig:front"></div> <!-- FIGURE -->
+<hr class="figure">
+<center><p class="caption">Figure 1:  Initial configuration of water, seen from the front.  <!-- caption label: fig:front --> </p></center>
+<p><img src="fig/initial_config_front.png" align="bottom" width=500></p>
+</center>
+
+<p>
+<center> <!-- figure label: --> <div id="fig:perspective"></div> <!-- FIGURE -->
+<hr class="figure">
+<center><p class="caption">Figure 2:  Initial configuration of water, seen from perspective.  <!-- caption label: fig:perspective --> </p></center>
+<p><img src="fig/initial_config_perspective.png" align="bottom" width=500></p>
+</center>
+
+<!-- ------------------- end of main content --------------- -->
+
+
+</body>
+</html>
+    
+
