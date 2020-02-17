@@ -11,31 +11,29 @@ Automatically generated HTML file from DocOnce source
 
 <title>The Water Project</title>
 
+<!-- Bootstrap style: bootstrap -->
+<link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<!-- not necessary
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+-->
 
 <style type="text/css">
-/* blueish style */
 
-/* Color definitions:  http://www.december.com/html/spec/color0.html
-   CSS examples:       http://www.w3schools.com/css/css_examples.asp */
-
-body {
-  margin-top: 1.0em;
-  background-color: #ffffff;
-  font-family: Helvetica, Arial, FreeSans, san-serif;
-  color: #000000;
+/* Add scrollbar to dropdown menus in bootstrap navigation bar */
+.dropdown-menu {
+   height: auto;
+   max-height: 400px;
+   overflow-x: hidden;
 }
-h1 { font-size: 1.8em; color: #1e36ce; }
-h2 { font-size: 1.6em; color: #1e36ce; }
-h3 { font-size: 1.4em; color: #1e36ce; }
-a { color: #1e36ce; text-decoration:none; }
-tt { font-family: "Courier New", Courier; }
-/* pre style removed because it will interfer with pygments */
-p { text-indent: 0px; }
-hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-p.caption { width: 80%; font-style: normal; text-align: left; }
-hr.figure { border: 0; width: 80%; border-bottom: 1px solid #aaa}
 
-div { text-align: justify; text-justify: inter-word; }
+/* Adds an invisible element before each target to offset for the navigation
+   bar */
+.anchor::before {
+  content:"";
+  display:block;
+  height:50px;      /* fixed header height for style bootstrap */
+  margin:-50px 0 0; /* negative fixed header height */
+}
 </style>
 
 
@@ -90,10 +88,59 @@ MathJax.Hub.Config({
 
 
     
+<!-- Bootstrap navigation bar -->
+<div class="navbar navbar-default navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="main.html">The Water Project</a>
+  </div>
+
+  <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Contents <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+     <!-- navigation toc: --> <li><a href="#table_of_contents" style="font-size: 80%;"><b>Table of contents</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec0" style="font-size: 80%;"><b>Introduction</b></a></li>
+     <!-- navigation toc: --> <li><a href="#sec:packingwater" style="font-size: 80%;"><b>Packing Water</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec2" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Find correct volume</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec3" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Generate Packmol input script</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec4" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Run Packmol</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec5" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Convert to LAMMPS-friendly format</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec6" style="font-size: 80%;"><b>The Vashishta Potential</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec7" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;The original Vashishta potential</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec8" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The two-body term</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec9" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The three-body term</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec10" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;The Branicio formulation of the Vashishta potential</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec11" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The two-body term</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec12" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The three-body term</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec13" style="font-size: 80%;"><b>Water Parameters</b></a></li>
+     <!-- navigation toc: --> <li><a href="#___sec14" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;Run LAMMPS with selected parameters</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec15" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Setting parameters</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec16" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Generate parameter file</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec17" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run LAMMPS simulation</a></li>
+     <!-- navigation toc: --> <li><a href="#___sec18" style="font-size: 80%;">&nbsp;&nbsp;&nbsp;The relative charge of Hydrogen</a></li>
+
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+</div> <!-- end of navigation bar -->
+
+<div class="container">
+
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p> <!-- add vertical space -->
+
 <!-- ------------------- main content ---------------------- -->
 
 
 
+<div class="jumbotron">
 <center><h1>The Water Project</h1></center>  <!-- document title -->
 
 <p>
@@ -110,6 +157,8 @@ MathJax.Hub.Config({
 <p>
 <center><h4>Feb 17, 2020</h4></center> <!-- date -->
 <br>
+<p>
+</div> <!-- end jumbotron -->
 
 <h1 id="table_of_contents">Table of contents</h2>
 
@@ -128,7 +177,7 @@ MathJax.Hub.Config({
 &nbsp; &nbsp; &nbsp; <a href="#___sec18"> The relative charge of Hydrogen </a><br>
 </p>
 
-<h1 id="___sec0">Introduction </h1>
+<h1 id="___sec0" class="anchor">Introduction </h1>
 Water is a substance that is found everywhere on earth, and is a fundamental requirement for life to occur the way we know it. Therefore, knowledge of water is important both on microscopic and the macroscopic scales. Despite this, general inter-atomic water potentials are often unavailable. The most popular water potentials are tailored in order to model specific properties of water, and if we use the potential to study other properties they will not work.
 
 <p>
@@ -140,12 +189,12 @@ The Vashishta potential is an inter-atomic potential developed by Vashishta et a
 <p>
 <!-- !split -->
 
-<h1 id="sec:packingwater">Packing Water</h1>
+<h1 id="sec:packingwater" class="anchor">Packing Water</h1>
 
 <p>
 Before we can start a simulation, we need to pack water. This should be done wisely, as an unphysical initial water bulk will give unphysical results. Firstly, it is important to pack the water with the correct density. The water density at 1 atm pressure and 300K is 0.9966 g/cm&nbsp;\( ^3 \). Secondly, it is important that the spacing between molecules are appropriate, in order to start with a realistic potential energy.
 
-<h2 id="___sec2">Find correct volume </h2>
+<h2 id="___sec2" class="anchor">Find correct volume </h2>
 We will use the Packmol package to pack water. It packs the water in a cubic box, and takes the length of the sides of the box as an input. The first thing we need to do, is therefore to find the length of the box side at a given density. The class <code>WaterPack</code> found in <code>python/pack_water.py</code> contains a function for this, and the length can be found from
 
 <p>
@@ -160,7 +209,7 @@ packer <span style="color: #666666">=</span> WaterPack(number)
 length <span style="color: #666666">=</span> packer<span style="color: #666666">.</span>den2len(density)        <span style="color: #408080; font-style: italic"># Length of box in [Å]</span>
 </pre></div>
 
-<h2 id="___sec3">Generate Packmol input script </h2>
+<h2 id="___sec3" class="anchor">Generate Packmol input script </h2>
 Thereafter, we would like to generate a Packmol input script, based on the volume of the cubic box and the number of molecules. This is done by
 
 <p>
@@ -171,7 +220,7 @@ Thereafter, we would like to generate a Packmol input script, based on the volum
 <p>
 The argument <code>pbc=1.0</code> is added to have an appropriate spacing between the molecules also at the boundaries.
 
-<h2 id="___sec4">Run Packmol </h2>
+<h2 id="___sec4" class="anchor">Run Packmol </h2>
 We are now ready to run Packmol and generate the positions of all the atoms. Simply run
 
 <p>
@@ -182,7 +231,7 @@ We are now ready to run Packmol and generate the positions of all the atoms. Sim
 <p>
 PS: This requires that the Packmol package is installed correctly. See <a href="http://m3g.iqm.unicamp.br/packmol/home.shtml" target="_self">the Packmol webpage</a>.
 
-<h2 id="___sec5">Convert to LAMMPS-friendly format </h2>
+<h2 id="___sec5" class="anchor">Convert to LAMMPS-friendly format </h2>
 The file generated by Packmol is on XYZ-format, which LAMMPS does not support. To convert the file to a LAMMPS-friendly file, run
 
 <p>
@@ -211,10 +260,10 @@ Now we finally have a realistic initial water configuration. It is presented in 
 <p>
 <!-- !split -->
 
-<h1 id="___sec6">The Vashishta Potential </h1>
+<h1 id="___sec6" class="anchor">The Vashishta Potential </h1>
 The Vashishta potential (Vashishta, 1990) consists of a two-body and a three-body term, and describes effects like steric repulsion, Coulomb interaction, charge-dipole interaction, van der Waals interaction, and covalent bond bending and stretching. It has proven to be able to model fundamental features in silica and water, and is today the <b>de facto</b> standard potential for modeling the molecular behavior of the substances.
 
-<h2 id="___sec7">The original Vashishta potential </h2>
+<h2 id="___sec7" class="anchor">The original Vashishta potential </h2>
 The original Vashishta potential was introduced by Vashishta et al. in 1990, and was made to model AX&nbsp;\( _2 \)-type glasses (like SiO&nbsp;\( _2 \)). It takes the form
 $$
 V = \sum_{i < j}^NV^{(2)}(r_{ij})+\sum_{i < j < k}^NV^{(3)}(r_{ij},r_{jk},r_{ik}),
@@ -222,7 +271,7 @@ $$
 
 where \( r_{ij}=|\boldsymbol{r}_{i}-\boldsymbol{r}_{j}| \) is the relative distance between particle \( i \) and \( j \). The first term is the two-body term, and the second term is the three-body term.
 
-<h3 id="___sec8">The two-body term </h3>
+<h3 id="___sec8" class="anchor">The two-body term </h3>
 
 The two-body term reads
 $$
@@ -240,7 +289,7 @@ Here we have five variational parameters:
 <li> \( r_{4s} \) - decay length \( \rightarrow \) 4.43&#197;</li>
 </ul>
 
-<h3 id="___sec9">The three-body term </h3>
+<h3 id="___sec9" class="anchor">The three-body term </h3>
 
 The three-body term reads
 $$
@@ -273,10 +322,10 @@ Here we have four additional variational parameters:
 
 So in total, the potential takes nine parameters that need to be set carefully in order to get a realistic potential.
 
-<h2 id="___sec10">The Branicio formulation of the Vashishta potential </h2>
+<h2 id="___sec10" class="anchor">The Branicio formulation of the Vashishta potential </h2>
 The Vashishta potential was improved by Branicio et al. in 2009, adding support for the van der Waals interactions and screened Coulomb interaction. This is the Vashishta potential implemented in LAMMPS.
 
-<h3 id="___sec11">The two-body term </h3>
+<h3 id="___sec11" class="anchor">The two-body term </h3>
 
 The improved two-body interaction reads
 $$
@@ -307,7 +356,7 @@ This two-body term has eight variational parameters:
 <li> \( w_{ij} \) - van der Waals strength</li>
 </ul>
 
-<h3 id="___sec12">The three-body term </h3>
+<h3 id="___sec12" class="anchor">The three-body term </h3>
 
 The three-body term reads
 $$
@@ -344,16 +393,16 @@ Here, we again have five variational parameters:
 
 <!-- !split -->
 
-<h1 id="___sec13">Water Parameters </h1>
+<h1 id="___sec13" class="anchor">Water Parameters </h1>
 The Vashishta potential is a three-body potential, and in LAMMPS we need to specify the three-body interactions between all possible three-body objects. For water, this means the objects H-H-H, O-O-O, H-O-H, O-H-O, H-H-O, O-H-H, O-O-H and H-O-O. By recalling that there are 14 variational parameters for each object, we have a large set of parameters to specify. However, the only molecules and ions that we will get are H&nbsp;\( _2 \), O&nbsp;\( _2 \), H&nbsp;$_2$O and OH&nbsp;\( ^- \). In other words, only the first four objects will contribute, meaning that all parameters related to the last four objects can be set to zero (but they still need to be identified in the parameter file). Moreover, the H&nbsp;\( _2 \), O&nbsp;\( _2 \) and OH&nbsp;\( ^- \) molecules are obviously affected by two-body interactions only, and the three-body parameters can be set to zero. After this, we are left with 35 independent parameters that need to be found. Still a lot of parameters, making a grid-search impossible.
 
-<h2 id="___sec14">Run LAMMPS with selected parameters </h2>
+<h2 id="___sec14" class="anchor">Run LAMMPS with selected parameters </h2>
 We have developed a system making it easy to run LAMMPS with the preferred parameters. The class is named <code>AutoSim</code> and is found in <code>python/lammps_simulator.py</code>. It is based on a three-step procedure:
 1. Set parameters. Parameters that are not specified are set to the default parameters, suggested by Wang et al.
 2. Generate the parameter file
 3. Run simulation
 
-<h3 id="___sec15">Setting parameters </h3>
+<h3 id="___sec15" class="anchor">Setting parameters </h3>
 
 To change the relative charge of Hydrogen to \( Z_H = 0.5 \), simply run the following script:
 
@@ -372,7 +421,7 @@ params <span style="color: #666666">=</span> {<span style="color: #BA2121">&quot
 sim<span style="color: #666666">.</span>set_parameters(params)
 </pre></div>
 
-<h3 id="___sec16">Generate parameter file </h3>
+<h3 id="___sec16" class="anchor">Generate parameter file </h3>
 
 To generate a readable parameter file for LAMMPS, run
 
@@ -382,7 +431,7 @@ To generate a readable parameter file for LAMMPS, run
 <div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span></span>sim<span style="color: #666666">.</span>generate_parameter_file(filename<span style="color: #666666">=</span><span style="color: #BA2121">&quot;data/H2O.vashishta&quot;</span>)
 </pre></div>
 
-<h3 id="___sec17">Run LAMMPS simulation </h3>
+<h3 id="___sec17" class="anchor">Run LAMMPS simulation </h3>
 
 The last step is to run the actual simulation, given a parameter file and an initial water configuration found by the script presented in <a href="#sec:packingwater">Packing Water</a>. The LAMMPS executable and the output file path should also be given:
 
@@ -396,15 +445,26 @@ path = &quot;data/&quot;
 sim.simulate(read_data=read_data, lammps_exec=lammps_exec, path=path)
 </pre></div>
 
-<h2 id="___sec18">The relative charge of Hydrogen </h2>
+<h2 id="___sec18" class="anchor">The relative charge of Hydrogen </h2>
 In a water molecule, the attraction from the Oxygen atom on the electrons are stronger than the attraction from the Hydrogen atoms on the electrons. This means that each atom is no longer neutral, giving the atoms relative charges. The Oxygen atom will be negatively charged, while the Hydrogen atom will have a positive charge. The molecule, on the other hand, is still neutral, making the relative charge of Oxygen, \( Z_O \), and the relative charge of Hydrogen, \( Z_H \), dependent on each other in the following way:
 $$
 Z_O=-2Z_H
 $$
 
-Exactly what the relative charges should be in our model is hard to say, 
+Exactly what the relative charges should be in our model is hard to say. 
 
 <!-- ------------------- end of main content --------------- -->
+
+</div>  <!-- end container -->
+<!-- include javascript, jQuery *first* -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap footer
+<footer>
+<a href="http://..."><img width="250" align=right src="http://..."></a>
+</footer>
+-->
 
 
 </body>
