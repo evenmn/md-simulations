@@ -7,13 +7,15 @@ TOC: on
 ======= Introduction =======
 Water is a substance that is found everywhere on earth, and is a fundamental requirement for life to occur the way we know it. Therefore, knowledge of water is important both on microscopic and the macroscopic scales. Despite this, general inter-atomic water potentials are often unavailable. The most popular water potentials are tailored in order to model specific properties of water, and if we use the potential to study other properties they will not work. 
 
-The complexity of water is what makes it hard to find flexible potentials. The water molecules are not static, the distance between the atoms and the three-body angle changes with time, and occasionally OH$^-$-groups and H$_3$O$^+$-groups will occur. Therefore, a realistic water potential does not model the water molecule as a static object, but instead it should set up an inter-atomic potential between all the atoms, based on charge interaction, dipole-dipole-interaction, van der Vaals interactions and so on. 
+The complexity of water is what makes it hard to find flexible potentials. The water molecules are not static, the distance between the atoms and the three-body angle changes with time, and occasionally OH~$^-$-groups and H~$_3$~O~$^+$-groups will occur. Therefore, a realistic water potential does not model the water molecule as a static object, but instead it should set up an inter-atomic potential between all the atoms, based on charge interaction, dipole-dipole-interaction, van der Vaals interactions and so on. 
 
 The Vashishta potential is an inter-atomic potential developed by Vashishta et al. at the University of Southern California. It is very flexible, and has shown impressive power as silica potential (Vashishta, 1990), SiC potential (Vashishta, 2007) and InP potential (Branicio, 2009). We aim to tweak the parameters in the potential such that the water behaves realistic under 1 atm pressure.
 
 !split
-======= Packing water =======
-Before we can start a simulation, we need to pack water. This should be done wisely, as an unphysical initial water bulk will give unphysical results. Firstly, it is important to pack the water with the correct density. The water density at 1 atm pressure and 300K is 0.9966 g/cm$^3$. Secondly, it is important that the spacing between molecules are appropriate, in order to start with a realistic potential energy.
+======= Packing Water =======
+label{sec:packingwater}
+
+Before we can start a simulation, we need to pack water. This should be done wisely, as an unphysical initial water bulk will give unphysical results. Firstly, it is important to pack the water with the correct density. The water density at 1 atm pressure and 300K is 0.9966 g/cm~$^3$. Secondly, it is important that the spacing between molecules are appropriate, in order to start with a realistic potential energy.
 
 ===== Find correct volume =====
 We will use the Packmol package to pack water. It packs the water in a cubic box, and takes the length of the sides of the box as an input. The first thing we need to do, is therefore to find the length of the box side at a given density. The class `WaterPack` found in `python/pack_water.py` contains a function for this, and the length can be found from
@@ -61,4 +63,160 @@ FIGURE: [fig/initial_config_front.png, width=500 frac=0.8] Initial configuration
 FIGURE: [fig/initial_config_perspective.png, width=500 frac=0.8] Initial configuration of water, seen from perspective. label{fig:perspective}
 
 !split
-======= 
+======= The Vashishta Potential =======
+The Vashishta potential (Vashishta, 1990) consists of a two-body and a three-body term, and describes effects like steric repulsion, Coulomb interaction, charge-dipole interaction, van der Waals interaction, and covalent bond bending and stretching. It has proven to be able to model fundamental features in silica and water, and is today the _de facto_ standard potential for modeling the molecular behavior of the substances. 
+
+===== The original Vashishta potential =====
+The original Vashishta potential was introduced by Vashishta et al. in 1990, and was made to model AX~$_2$-type glasses (like SiO~$_2$). It takes the form
+!bt
+V = \sum_{i<j}^NV^{(2)}(r_{ij})+\sum_{i<j<k}^NV^{(3)}(r_{ij},r_{jk},r_{ik}),
+!et
+where $r_{ij}=|\boldsymbol{r}_{i}-\boldsymbol{r}_{j}|$ is the relative distance between particle $i$ and $j$. The first term is the two-body term, and the second term is the three-body term. 
+
+=== The two-body term ===
+The two-body term reads
+!bt
+V_{ij}^{(2)}(r)=\underbrace{\frac{H_{ij}}{r^{\eta_{ij}}}}_{\text{steric repulsion}}+\underbrace{\frac{Z_iZ_j}{r}}_{\text{Coulomb interaction}}-\underbrace{\frac{\alpha_iZ_j^2+\alpha_jZ_i^2}{2r^4}e^{r/r_{4s}}}_{\text{charge dipole interaction}}.
+!et
+
+Here we have five variational parameters:
+* $H_{ij}$ - strength of steric interaction
+* $\eta_{ij}$ - exponent of steric repulsion
+* $Z_i$ - charge of i-th ion
+* $\alpha_i$ - electronic polarizability of the i-th ion
+* $r_{4s}$ - decay length $\rightarrow$ 4.43Å
+
+=== The three-body term ===
+The three-body term reads
+!bt
+V_{ijk}^{(3)}=\underbrace{B_{ijk}}_{\text{strength}}\underbrace{f(r_{ij},r_{ik})}_{\text{bond stretching}}\underbrace{p(\theta_{jik}\overline{\theta}_{jik})}_{\text{bond bending}},
+!et
+with
+!bt
+f(r_{ij},r_{ik})=
+\begin{cases}
+    \exp(\frac{l}{r_{ij}-r_0}-\frac{l}{r_{ik}-r_0})\qquad\text{if}\quad &r_{ij},r_{ik}<r_0\\
+    0 &r_{ij},r_{ik}>r_0,
+\end{cases}
+!et
+and
+!bt
+p(\theta_{jik},\overline{\theta}_{jik})=(\cos(\theta_{jik})-\cos(\overline{\theta}_{jik}))^2.
+!et
+
+Here we have four additional variational parameters:
+
+* $r_0$ - cutoff distance for the three-body interaction
+* $l$ - exponent of bond stretching
+* $\overline{\theta}$ - equilibrium angle
+* $B$ - strength of three-body correlations
+
+So in total, the potential takes nine parameters that need to be set carefully in order to get a realistic potential.
+
+===== The Branicio formulation of the Vashishta potential =====
+The Vashishta potential was improved by Branicio et al. in 2009, adding support for the van der Waals interactions and screened Coulomb interaction. This is the Vashishta potential implemented in LAMMPS.
+
+=== The two-body term ===
+The improved two-body interaction reads
+!bt
+V_{ij}^{(2)}(r)=\frac{H_{ij}}{r^{\eta_{ij}}}+\frac{Z_iZ_j}{r}e^{-r/\lambda_1}-\frac{D_{ij}}{r^4}e^{-r/\lambda_4}-\frac{w_{ij}}{r^6},
+!et
+where
+!bt
+H_{ij}=A(\sigma_i-\sigma_j)^{\eta_{ij}},
+!et
+and
+!bt
+D_{ij}=\frac{\alpha_iZ_j^2+\alpha_jZ_i^2}{2}.
+!et
+
+This two-body term has eight variational parameters:
+
+* $\eta_{ij}$ - exponent of steric repulsion
+* $Z_i$ - charge of i-th ion
+* $A$ - strength of steric repulsion
+* $\sigma_i$ - 
+* $\alpha_i$ - electronic polarizability of the i-th ion
+* $\lambda_1$ - Coulomb screening strength
+* $\lambda_4$ - decay length $\rightarrow$ 4.43Å
+* $w_{ij}$ - van der Waals strength
+
+=== The three-body term ===
+The three-body term reads
+!bt
+V_{ijk}^{(3)}=\Gamma(r_{ij},r_{ik})\Lambda(\theta_{jik}),
+!et
+with 
+!bt
+\Gamma(r_{ij},r_{ik})=B_{jik}\exp(\frac{\gamma}{r_{ij}-r_0}+\frac{\gamma}{r_{ik}-r_0})\Theta(r_0-r_{ij})\Theta(r_0-r_{ik}),
+!et
+!bt
+\Theta(x)=
+\begin{cases}
+    1\qquad\text{if}\quad & x\leq 0\\
+    0\qquad\text{if}\quad & x>0,
+\end{cases}
+!et
+!bt
+\Lambda(\theta_{jik})=\frac{(\cos(\theta_{jik})-\cos(\theta_{0}))^2}{1+C(\cos(\theta_{jik})-\cos(\theta_0))^2}.
+!et
+
+Here, we again have five variational parameters:
+
+* $r_0$ - cutoff distance for the three-body interaction
+* $\gamma$ - exponent of bond stretching
+* $\theta_0$ - equilibrium angle
+* $B$ - strength of three-body correlations
+* $C$ - denominator factor
+
+!split
+======= Water Parameters =======
+The Vashishta potential is a three-body potential, and in LAMMPS we need to specify the three-body interactions between all possible three-body objects. For water, this means the objects H-H-H, O-O-O, H-O-H, O-H-O, H-H-O, O-H-H, O-O-H and H-O-O. By recalling that there are 14 variational parameters for each object, we have a large set of parameters to specify. However, the only molecules and ions that we will get are H~$_2$, O~$_2$, H~$_2$O and OH~$^-$. In other words, only the first four objects will contribute, meaning that all parameters related to the last four objects can be set to zero (but they still need to be identified in the parameter file). Moreover, the H~$_2$, O~$_2$ and OH~$^-$ molecules are obviously affected by two-body interactions only, and the three-body parameters can be set to zero. After this, we are left with 35 independent parameters that need to be found. Still a lot of parameters, making a grid-search impossible.
+
+===== Run LAMMPS with selected parameters =====
+We have developed a system making it easy to run LAMMPS with the preferred parameters. The class is named `AutoSim` and is found in `python/lammps_simulator.py`. It is based on a three-step procedure:
+1. Set parameters. Parameters that are not specified are set to the default parameters, suggested by Wang et al.
+2. Generate the parameter file
+3. Run simulation
+
+=== Setting parameters ===
+To change the relative charge of Hydrogen to $Z_H = 0.5$, simply run the following script:
+
+!bc python
+from lammps_simulator import AutoSim
+sim = AutoSim("water")
+
+Z_H = 0.5
+Z_O = - 2 * Z_H
+params = {"HHH" : {"Zi" : Z_H, "Zj" : Z_H},
+          "OOO" : {"Zi" : Z_O, "Zj" : Z_O},
+          "OHH" : {"Zi" : Z_O, "Zj" : Z_H},
+          "HOO" : {"Zi" : Z_H, "Zj" : Z_O}}
+sim.set_parameters(params)
+!ec
+
+=== Generate parameter file ===
+To generate a readable parameter file for LAMMPS, run
+
+!bc python
+sim.generate_parameter_file(filename="data/H2O.vashishta")
+!ec
+
+=== Run LAMMPS simulation ===
+The last step is to run the actual simulation, given a parameter file and an initial water configuration found by the script presented in ref{sec:packingwater}. The LAMMPS executable and the output file path should also be given:
+
+!bc
+read_data = "data/water_lmps.data"
+lammps_exec = "lmp_serial"
+path = "data/"
+
+sim.simulate(read_data=read_data, lammps_exec=lammps_exec, path=path)
+!ec
+
+===== The relative charge of Hydrogen =====
+In a water molecule, the attraction from the Oxygen atom on the electrons are stronger than the attraction from the Hydrogen atoms on the electrons. This means that each atom is no longer neutral, giving the atoms relative charges. The Oxygen atom will be negatively charged, while the Hydrogen atom will have a positive charge. The molecule, on the other hand, is still neutral, making the relative charge of Oxygen, $Z_O$, and the relative charge of Hydrogen, $Z_H$, dependent on each other in the following way:
+!bt
+Z_O=-2Z_H
+!et
+Exactly what the relative charges should be in our model is hard to say. 
+
